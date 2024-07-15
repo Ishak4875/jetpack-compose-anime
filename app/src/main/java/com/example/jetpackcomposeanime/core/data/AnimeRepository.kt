@@ -2,8 +2,14 @@ package com.example.jetpackcomposeanime.core.data
 
 import android.util.Log
 import androidx.lifecycle.asLiveData
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.map
 import com.example.jetpackcomposeanime.core.data.source.local.LocalDataSource
 import com.example.jetpackcomposeanime.core.data.source.local.entity.FavoriteEntity
+import com.example.jetpackcomposeanime.core.data.source.local.room.AnimeDatabase
 import com.example.jetpackcomposeanime.core.data.source.remote.RemoteDataSource
 import com.example.jetpackcomposeanime.core.data.source.remote.network.ApiResponse
 import com.example.jetpackcomposeanime.core.data.source.remote.response.DataResponse
@@ -23,29 +29,35 @@ import javax.inject.Singleton
 class AnimeRepository @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
     private val localDataSource: LocalDataSource,
-    private val appExecutors: AppExecutors
+    private val appExecutors: AppExecutors,
+    private val animeDatabase: AnimeDatabase
 ) : IAnimeRepository {
-    override fun getAllAnime(): Flow<Resource<List<Anime>>> =
-        object : NetworkBoundResource<List<Anime>, List<DataResponse>>() {
-            override fun loadFromDB(): Flow<List<Anime>> {
-                return localDataSource.getAllAnime().map {
-                    DataMapper.mapAnimeEntitiesToDomain(it)
-                }
+    @OptIn(ExperimentalPagingApi::class)
+    override fun getAllAnime(): Flow<PagingData<Anime>> {
+        val pagingSourceFactory = { localDataSource.getAllAnimePagingSource() }
+
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20, // adjust page size as needed
+                enablePlaceholders = false
+            ),
+            remoteMediator = AnimeRemoteMediator(
+                animeDatabase,
+                localDataSource,
+                remoteDataSource
+
+            ),
+            pagingSourceFactory = pagingSourceFactory
+        ).flow.map { pagingData ->
+            pagingData.map { animeEntity ->
+                DataMapper.mapAnimeEntityToDomain(animeEntity)
             }
+        }
+    }
 
-            override fun shouldFetch(data: List<Anime>?): Boolean = true
-
-            override suspend fun createCall(): Flow<ApiResponse<List<DataResponse>>> =
-                remoteDataSource.getAllAnime()
-
-            override suspend fun saveCallResult(data: List<DataResponse>) {
-                val animeList = DataMapper.mapResponsesToAnimeEntities(data)
-                localDataSource.insertAnime(animeList)
-            }
-        }.asFlow()
 
     override fun getTrending(): Flow<Resource<List<Anime>>> =
-        object : NetworkBoundResource<List<Anime>, List<DataResponse>>(){
+        object : NetworkBoundResource<List<Anime>, List<DataResponse>>() {
             override fun loadFromDB(): Flow<List<Anime>> {
                 return localDataSource.getAlTrending().map {
                     DataMapper.mapTrendingEntitiesToDomain(it)
@@ -75,11 +87,11 @@ class AnimeRepository @Inject constructor(
     override fun setFavoriteAnime(anime: Anime, state: Boolean) {
         val favoriteEntity = DataMapper.mapDomainToFavoriteEntity(anime)
         appExecutors.diskIO().execute {
-            if (!state){
+            if (!state) {
                 GlobalScope.launch {
                     localDataSource.insertFavorite(favoriteEntity)
                 }
-            }else{
+            } else {
                 localDataSource.deleteFavorite(favoriteEntity.id)
             }
         }

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.example.jetpackcomposeanime.core.data.source.local.room.AnimeDao
 import com.example.jetpackcomposeanime.core.data.source.local.room.AnimeDatabase
+import com.example.jetpackcomposeanime.core.data.source.local.room.RemoteKeysAnimeDao
 import net.sqlcipher.database.SQLiteDatabase
 import dagger.Module
 import dagger.Provides
@@ -33,5 +34,9 @@ class DatabaseModule {
 
     @Provides
     fun provideAnimeDao(database: AnimeDatabase): AnimeDao = database.animeDao()
+
+    @Provides
+    fun provideRemoteKeysAnimeDao(database: AnimeDatabase): RemoteKeysAnimeDao =
+        database.remoteKeysAnimeDao()
 
 }
