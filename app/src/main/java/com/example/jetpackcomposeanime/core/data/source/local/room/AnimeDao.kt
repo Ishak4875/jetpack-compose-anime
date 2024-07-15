@@ -1,6 +1,6 @@
 package com.example.jetpackcomposeanime.core.data.source.local.room
 
-import androidx.lifecycle.LiveData
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -8,7 +8,6 @@ import androidx.room.Query
 import com.example.jetpackcomposeanime.core.data.source.local.entity.AnimeEntity
 import com.example.jetpackcomposeanime.core.data.source.local.entity.FavoriteEntity
 import com.example.jetpackcomposeanime.core.data.source.local.entity.TrendingEntity
-import com.example.jetpackcomposeanime.core.domain.model.Anime
 import kotlinx.coroutines.flow.Flow
 
 
@@ -16,6 +15,9 @@ import kotlinx.coroutines.flow.Flow
 interface AnimeDao {
     @Query("SELECT * FROM anime")
     fun getAllAnime(): Flow<List<AnimeEntity>>
+
+    @Query("SELECT * FROM anime")
+    fun getAllPagingSource(): PagingSource<Int, AnimeEntity>
 
     @Query("SELECT * FROM trending")
     fun getAllTrending(): Flow<List<TrendingEntity>>
@@ -31,6 +33,8 @@ interface AnimeDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertFavorite(favorite: FavoriteEntity)
+    @Query("DELETE FROM anime")
+    suspend fun clearAllAnime()
 
     @Query("DELETE FROM favorite WHERE id = :id")
     fun deleteFavorite(id: String)

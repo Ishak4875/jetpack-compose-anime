@@ -66,6 +66,23 @@ object DataMapper {
             )
         }
 
+    fun mapFavoriteEntitiesToDomain(input: List<FavoriteEntity>): List<Anime> =
+        input.map {
+            Anime(
+                id = it.id,
+                synopsis = it.synopsis,
+                title = it.title,
+                averageRating = it.averageRating,
+                startDate = it.startDate,
+                endDate = it.endDate,
+                ratingRank = it.ratingRank,
+                status = it.status,
+                coverImage = it.coverImage,
+                posterImage = it.posterImage,
+                episodeCount = it.episodeCount
+            )
+        }
+
     fun mapTrendingEntitiesToDomain(input: List<TrendingEntity>): List<Anime> =
         input.map {
             Anime(
@@ -83,22 +100,21 @@ object DataMapper {
             )
         }
 
-    fun mapFavoriteEntitiesToDomain(input: List<FavoriteEntity>): List<Anime> =
-        input.map {
-            Anime(
-                id = it.id,
-                synopsis = it.synopsis,
-                title = it.title,
-                averageRating = it.averageRating,
-                startDate = it.startDate,
-                endDate = it.endDate,
-                ratingRank = it.ratingRank,
-                status = it.status,
-                coverImage = it.coverImage,
-                posterImage = it.posterImage,
-                episodeCount = it.episodeCount
-            )
-        }
+    fun mapAnimeEntityToDomain(input: AnimeEntity): Anime {
+        return Anime(
+            id = input.id,
+            synopsis = input.synopsis,
+            title = input.title,
+            averageRating = input.averageRating,
+            startDate = input.startDate,
+            endDate = input.endDate,
+            ratingRank = input.ratingRank,
+            status = input.status,
+            coverImage = input.coverImage,
+            posterImage = input.posterImage,
+            episodeCount = input.episodeCount
+        )
+    }
 
     fun mapDomainToAnimeEntity(input: Anime) = AnimeEntity(
         id = input.id,

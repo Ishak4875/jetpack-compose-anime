@@ -1,5 +1,6 @@
 package com.example.jetpackcomposeanime.core.domain.usecase
 
+import androidx.paging.PagingData
 import com.example.jetpackcomposeanime.core.data.Resource
 import com.example.jetpackcomposeanime.core.domain.model.Anime
 import com.example.jetpackcomposeanime.core.domain.repository.IAnimeRepository
@@ -8,7 +9,7 @@ import javax.inject.Inject
 
 class AnimeInteractor @Inject constructor(private val animeRepository: IAnimeRepository) :
     AnimeUseCase {
-    override fun getAllAnime(): Flow<Resource<List<Anime>>> = animeRepository.getAllAnime()
+    override fun getAllAnime(): Flow<PagingData<Anime>> = animeRepository.getAllAnime()
 
     override fun getFavorite(): Flow<List<Anime>> = animeRepository.getFavorite()
 
