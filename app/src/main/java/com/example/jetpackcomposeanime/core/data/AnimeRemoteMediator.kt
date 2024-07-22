@@ -28,7 +28,7 @@ class AnimeRemoteMediator(
             val page = when (loadType) {
                 LoadType.REFRESH -> {
                     val remoteKeysAnime = getRemoteKeyClosestToCurrentPosition(state)
-                    remoteKeysAnime?.nextKey?.minus(1) ?: 1
+                    remoteKeysAnime?.nextKey?.minus(1) ?: 0
                 }
 
                 LoadType.PREPEND -> {
@@ -55,7 +55,7 @@ class AnimeRemoteMediator(
                         }
 
                         val nextKey = if (apiResponse.data.isEmpty()) null else page + 1
-                        val prevKey = if (page == 1) null else page - 1
+                        val prevKey = if (page == 0) null else page - 1
 
                         val keys = apiResponse.data.map {
                             RemoteKeysAnimeEntity(id = it.id, prevKey, nextKey)

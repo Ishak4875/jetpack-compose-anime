@@ -4,6 +4,8 @@ import androidx.paging.PagingSource
 import com.example.jetpackcomposeanime.core.data.source.local.entity.AnimeEntity
 import com.example.jetpackcomposeanime.core.data.source.local.entity.FavoriteEntity
 import com.example.jetpackcomposeanime.core.data.source.local.entity.RemoteKeysAnimeEntity
+import com.example.jetpackcomposeanime.core.data.source.local.entity.RemoteKeysSearchEntity
+import com.example.jetpackcomposeanime.core.data.source.local.entity.SearchAnimeEntity
 import com.example.jetpackcomposeanime.core.data.source.local.entity.TrendingEntity
 import com.example.jetpackcomposeanime.core.data.source.local.room.AnimeDao
 import com.example.jetpackcomposeanime.core.data.source.local.room.RemoteKeysAnimeDao
@@ -17,13 +19,13 @@ class LocalDataSource @Inject constructor(
     private val remoteKeysAnimeDao: RemoteKeysAnimeDao
 ) {
     fun getAllAnime(): Flow<List<AnimeEntity>> = animeDao.getAllAnime()
-
     fun getAllAnimePagingSource(): PagingSource<Int, AnimeEntity> = animeDao.getAllPagingSource()
     fun getAlTrending(): Flow<List<TrendingEntity>> = animeDao.getAllTrending()
     fun getFavorite(): Flow<List<FavoriteEntity>> = animeDao.getFavorite()
     suspend fun insertAnime(animeList: List<AnimeEntity>) = animeDao.insertAnime(animeList)
     suspend fun insertTrending(trendingList: List<TrendingEntity>) =
         animeDao.insertTrending(trendingList)
+
     suspend fun clearAllAnime() = animeDao.clearAllAnime()
 
     suspend fun insertFavorite(favorite: FavoriteEntity) = animeDao.insertFavorite(favorite)
@@ -39,4 +41,20 @@ class LocalDataSource @Inject constructor(
         remoteKeysAnimeDao.getRemoteKeysAnimeId(id)
 
     suspend fun clearRemoteKeys() = remoteKeysAnimeDao.deleteRemoteKeys()
+
+    // Methods for RemoteKeysSearch
+    suspend fun insertRemoveKeysSearch(remoteKeys: List<RemoteKeysSearchEntity>) =
+        remoteKeysAnimeDao.insertAllAnimeSearch(remoteKeys)
+
+    suspend fun getRemoteKeysSearchId(id: String): RemoteKeysSearchEntity? =
+        remoteKeysAnimeDao.getRemoteKeysAnimeSearchId(id)
+
+    suspend fun clearRemoteKeysSearch() = remoteKeysAnimeDao.deleteRoomKeysSearch()
+
+    // Methods for search
+    suspend fun insertSearchingAnime(searchingAnimeList: List<SearchAnimeEntity>) =
+        animeDao.insertSearchingAnime(searchingAnimeList)
+    suspend fun clearAllSearchAnime() = animeDao.clearAllSearchingAnime()
+
+    fun getSearchingAnime(name: String) = animeDao.getSearchingAnime(name)
 }

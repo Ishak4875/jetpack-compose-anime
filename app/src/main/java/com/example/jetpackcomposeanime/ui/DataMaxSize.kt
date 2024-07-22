@@ -66,7 +66,7 @@ fun AnimeMaxItem(context: Context, anime: Anime) {
                     painter = rememberImagePainter(data = anime.posterImage, builder = {
                         scale(Scale.FILL)
                         placeholder(R.drawable.error_outline)
-                        transformations(CircleCropTransformation())
+//                        transformations(CircleCropTransformation())
                     }),
                     contentDescription = anime.title,
                     modifier = Modifier

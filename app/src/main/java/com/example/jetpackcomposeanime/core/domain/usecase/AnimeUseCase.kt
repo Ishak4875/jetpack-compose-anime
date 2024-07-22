@@ -11,4 +11,5 @@ interface AnimeUseCase {
     fun getTrending(): Flow<Resource<List<Anime>>>
     fun setFavoriteAnime(anime: Anime, state: Boolean)
     fun checkFavorite(id: String): Flow<Boolean>
+    fun getSearchingAnime(name: String): Flow<PagingData<Anime>>
 }

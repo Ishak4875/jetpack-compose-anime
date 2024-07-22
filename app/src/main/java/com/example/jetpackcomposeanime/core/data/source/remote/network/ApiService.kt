@@ -11,6 +11,13 @@ interface ApiService {
         @Query("page[limit]") size: Int
     ): ListAnimeResponse
 
+    @GET("anime")
+    suspend fun searchAnime(
+        @Query("page[offset]") page: Int,
+        @Query("page[limit]") size: Int,
+        @Query("filter[text]") name: String
+    ): ListAnimeResponse
+
     @GET("trending/anime")
     suspend fun getTrending(): ListAnimeResponse
 }

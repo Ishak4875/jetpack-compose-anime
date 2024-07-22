@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.jetpackcomposeanime.favorite.FavoriteViewModel
 import com.example.jetpackcomposeanime.ui.theme.BackgroundUI
+import com.example.jetpackcomposeanime.ui.theme.Blue700
 import com.example.jetpackcomposeanime.ui.theme.JetpackComposeAnimeTheme
 
 @Composable
@@ -31,7 +32,9 @@ fun FavoriteUI() {
     val textStyle = MaterialTheme.typography.titleLarge
 
     JetpackComposeAnimeTheme {
-        Surface {
+        Surface(
+            modifier = Modifier.fillMaxSize()
+        ) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -48,10 +51,25 @@ fun FavoriteUI() {
                         text = "Favorite Anime",
                         style = textStyle,
                         fontWeight = FontWeight.Bold,
-                        color = Color.Black
+                        color = Color.White,
+                        modifier = Modifier.padding(start = 8.dp, end = 8.dp)
                     )
                     favoriteListState.value?.let { favoriteList ->
-                        AnimeList(context,animeList = favoriteList)
+                        if (favoriteList.isEmpty()){
+                            Box(
+                                modifier = Modifier.fillMaxSize()
+                            ) {
+                                Text(
+                                    text = "There is not favorites anime yet",
+                                    style = textStyle,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Blue700,
+                                    modifier = Modifier.align(Alignment.Center)
+                                )
+                            }
+                        }else{
+                            AnimeList(context,animeList = favoriteList)
+                        }
                     }
                 }
             }

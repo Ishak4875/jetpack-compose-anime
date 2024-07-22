@@ -30,6 +30,23 @@ class RemoteDataSource @Inject constructor(private val apiService: ApiService) {
         }.flowOn(Dispatchers.IO)
     }
 
+    suspend fun searchAnime(page: Int, pageSize: Int, name: String): Flow<ApiResponse<List<DataResponse>>>{
+        return flow {
+            try {
+                val response = apiService.searchAnime(page,pageSize,name)
+                val dataArray = response.data
+                if (dataArray.isNotEmpty()){
+                    emit(ApiResponse.Success(response.data))
+                }else{
+                    emit(ApiResponse.Empty)
+                }
+            }catch (e: Exception){
+                emit(ApiResponse.Error(e.toString()))
+                Log.e("RemoteDataSource",e.toString())
+            }
+        }.flowOn(Dispatchers.IO)
+    }
+
     suspend fun getTrending(): Flow<ApiResponse<List<DataResponse>>> {
         return flow {
             try {

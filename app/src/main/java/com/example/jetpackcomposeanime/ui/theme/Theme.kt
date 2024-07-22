@@ -66,7 +66,6 @@ fun JetpackComposeAnimeTheme(
     SideEffect {
         systemUiController.setStatusBarColor(
             color = colorScheme.secondary,
-            darkIcons = useDarkIcons
         )
         systemUiController.setNavigationBarColor(
             color = Color.White

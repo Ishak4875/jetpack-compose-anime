@@ -1,14 +1,11 @@
 package com.example.jetpackcomposeanime.core.data
 
-import android.util.Log
-import androidx.lifecycle.asLiveData
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
 import com.example.jetpackcomposeanime.core.data.source.local.LocalDataSource
-import com.example.jetpackcomposeanime.core.data.source.local.entity.FavoriteEntity
 import com.example.jetpackcomposeanime.core.data.source.local.room.AnimeDatabase
 import com.example.jetpackcomposeanime.core.data.source.remote.RemoteDataSource
 import com.example.jetpackcomposeanime.core.data.source.remote.network.ApiResponse
@@ -99,5 +96,28 @@ class AnimeRepository @Inject constructor(
 
     override fun checkFavorite(id: String): Flow<Boolean> {
         return localDataSource.checkFavorite(id)
+    }
+
+    @OptIn(ExperimentalPagingApi::class)
+    override fun getSearchingAnime(name: String): Flow<PagingData<Anime>> {
+        val pagingSourceFactory = {localDataSource.getSearchingAnime(name)}
+
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                enablePlaceholders = false
+            ),
+            remoteMediator = SearchAnimeMediator(
+                animeDatabase,
+                localDataSource,
+                remoteDataSource,
+                name
+            ),
+            pagingSourceFactory = pagingSourceFactory
+        ).flow.map { pagingData ->
+            pagingData.map { searchAnimeEntity ->
+                DataMapper.mapSearchAnimeEntityToDomain(searchAnimeEntity)
+            }
+        }
     }
 }
