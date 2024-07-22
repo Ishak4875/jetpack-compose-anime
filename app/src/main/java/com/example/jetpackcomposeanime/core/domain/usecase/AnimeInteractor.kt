@@ -19,4 +19,6 @@ class AnimeInteractor @Inject constructor(private val animeRepository: IAnimeRep
         animeRepository.setFavoriteAnime(anime, state)
 
     override fun checkFavorite(id: String): Flow<Boolean> = animeRepository.checkFavorite(id)
+    override fun getSearchingAnime(name: String): Flow<PagingData<Anime>>
+        = animeRepository.getSearchingAnime(name)
 }
