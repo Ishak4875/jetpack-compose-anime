@@ -236,6 +236,8 @@ fun TopAppBarUI(navController: NavController) {
     var searchText by remember { mutableStateOf("") }
     var searchBarHeight by remember { mutableStateOf(0) }
 
+    var showBottomSheet by remember { mutableStateOf(false) }
+
     var items = remember {
         mutableListOf(
             "Fairy Tail",
@@ -305,7 +307,7 @@ fun TopAppBarUI(navController: NavController) {
 
         }
         IconButton(
-            onClick = { /* Handle search icon press */ },
+            onClick = { showBottomSheet = true },
             modifier = Modifier.align(Alignment.CenterVertically)
         ) {
             Icon(
@@ -316,6 +318,13 @@ fun TopAppBarUI(navController: NavController) {
                     .weight(0.2f)
                     .align(Alignment.CenterVertically),
                 tint = Color.White
+            )
+        }
+
+        if (showBottomSheet) {
+            BottomSheetFilterForm(
+                showBottomSheet = showBottomSheet,
+                onDismiss = { showBottomSheet = false }
             )
         }
     }
