@@ -1,6 +1,6 @@
 # Anime Info
 
-This application is an application that can provide information about anime. This application uses the API from [Kitsu](https://kitsu.docs.apiary.io/#) and was built using Jetpack Compose.
+This application is an application that can provide information about anime. This application uses the API from Kitsu. This application was built using Jetpack Compose, MVVM architecture, dependency injection and reactive programming.
 Below are some views in this application.
 1. Placeholder screen <br>
 ![Placeholder screen](https://drive.google.com/uc?id=1VMLg7PRpZKup0J7B0BNPcDhVL8G6_DrC)
